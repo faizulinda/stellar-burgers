@@ -20,7 +20,8 @@ import {
   IngredientDetails,
   OrderInfo,
   ProtectedRoute,
-  Modal
+  Modal,
+  OrderInfoModal
 } from '@components';
 
 import { useEffect } from 'react';
@@ -70,8 +71,11 @@ const App = () => {
           <Routes location={background || location}>
             <Route path='/' element={<ConstructorPage />} />
             <Route path='/feed' element={<Feed />} />
-            <Route path='/feed/:number' element={<OrderInfo />} />
-            <Route path='/ingredients/:id' element={<IngredientDetails />} />
+            <Route path='/feed/:number' element={<OrderInfo showNumber />} />
+            <Route
+              path='/ingredients/:id'
+              element={<IngredientDetails showTitle />}
+            />
 
             <Route
               path='/login'
@@ -126,7 +130,7 @@ const App = () => {
               path='/profile/orders/:number'
               element={
                 <ProtectedRoute>
-                  <OrderInfo />
+                  <OrderInfo showNumber />
                 </ProtectedRoute>
               }
             />
@@ -138,11 +142,7 @@ const App = () => {
             <Routes>
               <Route
                 path='/feed/:number'
-                element={
-                  <Modal title='Детали заказа' onClose={handleCloseModal}>
-                    <OrderInfo />
-                  </Modal>
-                }
+                element={<OrderInfoModal onClose={handleCloseModal} />}
               />
               <Route
                 path='/ingredients/:id'
@@ -156,9 +156,7 @@ const App = () => {
                 path='/profile/orders/:number'
                 element={
                   <ProtectedRoute>
-                    <Modal title='Детали заказа' onClose={handleCloseModal}>
-                      <OrderInfo />
-                    </Modal>
+                    <OrderInfoModal onClose={handleCloseModal} />
                   </ProtectedRoute>
                 }
               />

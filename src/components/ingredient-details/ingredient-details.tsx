@@ -5,7 +5,13 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIngredientById } from '@selectors';
 
-export const IngredientDetails: FC = () => {
+type TIngredientDetailsProps = {
+  showTitle?: boolean;
+};
+
+export const IngredientDetails: FC<TIngredientDetailsProps> = ({
+  showTitle = false
+}) => {
   /** TODO: взять переменную из стора */
   const { id } = useParams();
   const ingredientData = useSelector(selectIngredientById(id));
@@ -14,5 +20,10 @@ export const IngredientDetails: FC = () => {
     return <Preloader />;
   }
 
-  return <IngredientDetailsUI ingredientData={ingredientData} />;
+  return (
+    <IngredientDetailsUI
+      ingredientData={ingredientData}
+      showTitle={showTitle}
+    />
+  );
 };

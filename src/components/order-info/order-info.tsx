@@ -12,7 +12,11 @@ import {
 } from '@selectors';
 import { fetchOrderByNumber } from '../../services/slices/orderSlice';
 
-export const OrderInfo: FC = () => {
+type TOrderInfoProps = {
+  showNumber?: boolean;
+};
+
+export const OrderInfo: FC<TOrderInfoProps> = ({ showNumber = false }) => {
   const dispatch = useDispatch();
   const { number } = useParams();
 
@@ -88,5 +92,5 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return <OrderInfoUI orderInfo={orderInfo} showNumber={showNumber} />;
 };
