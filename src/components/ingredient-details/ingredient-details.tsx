@@ -1,14 +1,29 @@
 import { FC } from 'react';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectIngredientById } from '@selectors';
 
-export const IngredientDetails: FC = () => {
+type TIngredientDetailsProps = {
+  showTitle?: boolean;
+};
+
+export const IngredientDetails: FC<TIngredientDetailsProps> = ({
+  showTitle = false
+}) => {
   /** TODO: взять переменную из стора */
-  const ingredientData = null;
+  const { id } = useParams();
+  const ingredientData = useSelector(selectIngredientById(id));
 
   if (!ingredientData) {
     return <Preloader />;
   }
 
-  return <IngredientDetailsUI ingredientData={ingredientData} />;
+  return (
+    <IngredientDetailsUI
+      ingredientData={ingredientData}
+      showTitle={showTitle}
+    />
+  );
 };
