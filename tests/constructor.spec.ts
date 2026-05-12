@@ -61,7 +61,9 @@ test.describe('Конструктор бургера', () => {
 
     await firstBun.locator('a').click();
 
-    await expect(page.getByText('Детали ингредиента')).toBeVisible();
+    await expect(
+      page.locator('#modals').getByText('Детали ингредиента')
+    ).toBeVisible();
   });
 
   test('закрытие модального окна ингредиента по крестику', async ({ page }) => {
@@ -117,29 +119,6 @@ test.describe('Создание заказа', () => {
       notFound: 'fallback'
     });
 
-    await page.route('**/api/auth/user', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          user: { email: 'test@example.com', name: 'Test User' }
-        })
-      });
-    });
-
-    await page.route('**/api/orders', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          name: 'Краторный бургер',
-          order: { number: 12345 }
-        })
-      });
-    });
-
     await page.addInitScript(() => {
       localStorage.setItem('refreshToken', 'fake-refresh-token');
       document.cookie = 'accessToken=Bearer fake-access-token; path=/';
@@ -160,6 +139,10 @@ test.describe('Создание заказа', () => {
   test('создание заказа: номер заказа и очистка конструктора', async ({
     page
   }) => {
+    const constructor = page
+      .locator('section')
+      .filter({ has: page.getByRole('button', { name: 'Оформить заказ' }) });
+
     await page
       .locator('h3:has-text("Булки") + ul li')
       .first()
@@ -182,9 +165,7 @@ test.describe('Создание заказа', () => {
 
     await expect(page.locator('.text_type_digits-large')).not.toBeVisible();
 
-    await expect(page.getByText('Выберите булки').first()).toBeVisible();
-
-    await expect(page.getByText('Выберите булки').first()).toBeVisible();
-    await expect(page.getByText('Выберите начинку').first()).toBeVisible();
+    await expect(constructor.getByText('Выберите булки')).toHaveCount(2);
+    await expect(constructor.getByText('Выберите начинку')).toHaveCount(1);
   });
 });
